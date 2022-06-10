@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const { User, Sequelize } = require("./db/models");
 const router = require("./router/index");
 const errorMiddleware = require("./middlewares/error-middleware");
+const path = require('path')
 
 const PORT = 3001;
 const app = express();
@@ -17,10 +18,16 @@ app.use(
     origin: process.env.CLIENT_URL,
   })
 );
+app.use(express.static(path.join(__dirname, 'build')))
+
 app.use("/api", router);
 app.use(errorMiddleware);
 const start = async () => {
   try {
+      app.get('/*', (req, res) => {
+          // res.sendFile(path.join((__dirname, 'build', 'index.html')))
+          res.sendFile('./build/index.html', {root: __dirname})
+      })
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {
     console.log(e);
