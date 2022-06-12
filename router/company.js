@@ -26,10 +26,10 @@ router.post("/upload", async (req, res) => {
       // upload_preset: 'dev_setups',
     })
     console.log(uploadResponse)
-    res.json({ msg: "yaya" })
+    res.json({ url: uploadResponse })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: "Something went wrong" })
+    res.json({ err: "Something went wrong" })
   }
 })
 

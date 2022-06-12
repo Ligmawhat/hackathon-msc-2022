@@ -24,7 +24,7 @@ app.use(
 app.use(express.static(path.join(__dirname, "build")))
 
 app.use("/event", eventRouter)
-app.use("/user", userRouter)
+app.use("/api", userRouter)
 app.use("/company", companyRouter)
 app.use(errorMiddleware)
 
