@@ -1,25 +1,20 @@
 const ChatService = require('../service/chat-service');
 const myEmitter = require('../src/ee');
 const {
-  PRIVATE_MESSAGE_SOCKET,
-  GROUP_MESSAGE_SOCKET,
-  GLOBAL_MESSAGE_SOCKET,
+  SEND_MESSAGE_SOCKET,
+  GIVE_CHAT_SOCKET,
+  CREATE_CHAT_SOCKET,
 } = require('../src/constants/event');
 
 class ChatController {
   async sendMessage(req, res, next) {
     try {
-      // const { message, chatId, userId } = req.body;
-      // const chatData = await ChatService.send(message, chatId, userId);
-      // const chat = await Chat.findOne({ where: { id: chatId } })
+      const { content, chat_id, user_id } = req.body;
+      const chatData = await ChatService.send(content, chat_id, user_id);
+      const listOfUsers = await ChatService.giveListOfUsers(chat_id);
 
-      // if (chat.typeOfChat === 'privat')
-        myEmitter.emit(PRIVATE_MESSAGE_SOCKET, message, userId);
-      // else if (chat.typeOfChat === 'group')
-      //   myEmitter.emit(GROUP_MESSAGE_SOCKET, message, listOfUsers);
-      // else if (chat.typeOfChat === 'global')
-      //   myEmitter.emit(GLOBAL_MESSAGE_SOCKET, message, req.session.user.name);
-      
+      myEmitter.emit(SEND_MESSAGE_SOCKET, chatData, listOfUsers);
+
       return res.json(chatData);
     } catch (error) {
       next(error);
@@ -28,21 +23,21 @@ class ChatController {
 
   async giveChat(req, res, next) {
     try {
-      const { chatId, arrayOfUsers } = req.body;
-      const chat = await ChatService.give(chatId, arrayOfUsers);
+      const { chat_id } = req.body;
+      const chat = await ChatService.give(chat_id);
       res.json(chat);
     } catch (error) {}
   }
 
   async createChat(req, res, next) {
     try {
-      const { typeOfChat, arrOfUsers } = req.body;
-      const chat = await ChatService.create(typeOfChat, arrOfUsers);
+      const { typeOfChat, initiator_id } = req.body;
+      const chat = await ChatService.create(typeOfChat, initiator_id);
       res.json(chat);
     } catch (error) {}
   }
 
-  async delete(req, res, next) {
+  async close(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
       const userData = await ChatService.refresh(refreshToken);
