@@ -1,14 +1,16 @@
 require("dotenv").config()
 const express = require("express")
-const cors = require("cors")
 const cookieParser = require("cookie-parser")
-const { User, Sequelize } = require("./db/models")
-const router = require("./router")
 const errorMiddleware = require("./middlewares/error-middleware")
 const path = require("path")
+const cors = require("cors")
 
-const PORT = 3001
+const PORT = 3002
 const app = express()
+
+const eventRouter = require("./router/event")
+const userRouter = require("./router/index")
+const companyRouter = require("./router/company")
 
 app.use(express.json({ limit: "50mb" }))
 app.use(express.urlencoded({ limit: "50mb", extended: true }))
@@ -21,7 +23,9 @@ app.use(
 )
 app.use(express.static(path.join(__dirname, "build")))
 
-app.use("/api", router)
+app.use("/event", eventRouter)
+app.use("/user", userRouter)
+app.use("/company", companyRouter)
 app.use(errorMiddleware)
 
 app.get("/*", (req, res) => {

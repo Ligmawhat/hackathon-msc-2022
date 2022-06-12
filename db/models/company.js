@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasOne(models.CompanyToken, { foreignKey: "company_id" })
       this.hasOne(models.CompanyCredentials, { foreignKey: "company_id" })
       this.hasMany(models.Event, { foreignKey: "company_id" })
     }
@@ -20,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     token_id: DataTypes.INTEGER,
     email: DataTypes.STRING,
     password: DataTypes.TEXT,
-    is_approved: DataTypes.STRING,
+    isActivated: DataTypes.STRING,
   }, {
     sequelize,
     modelName: "Company",

@@ -1,8 +1,8 @@
-const userService = require("../service/userServices/user-service")
+const userService = require("../service/companyServices/company-service")
 const { validationResult } = require("express-validator")
 const ApiError = require("../exceptions/api-error")
 
-class UserController {
+class CompanyController {
   async registration(req, res, next) {
     try {
       const errors = validationResult(req)
@@ -71,14 +71,14 @@ class UserController {
     }
   }
 
-  async getUsers(req, res, next) {
-    try {
-      const users = await userService.getAllUsers()
-      return res.json(users)
-    } catch (error) {
-      next(error)
-    }
-  }
+  // async getUsers(req, res, next) {
+  //   try {
+  //     const users = await userService.getAllUsers()
+  //     return res.json(users)
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
 }
 
-module.exports = new UserController()
+module.exports = new CompanyController()
