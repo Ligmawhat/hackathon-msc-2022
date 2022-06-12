@@ -27,7 +27,7 @@ router.post("/upload", async (req, res) => {
     res.json({ url: uploadResponse.secure_url })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: "Something went wrong" })
+    res.json({ err: "Something went wrong" })
   }
 })
 

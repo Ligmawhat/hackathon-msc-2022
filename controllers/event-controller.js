@@ -16,7 +16,8 @@ class EventController {
 
   async getAllEvents(req, res) {
     try {
-
+      const allEvents = await EventController.getAllEvents()
+      return res.json({allEvents})
     } catch (e) {
       console.log(e)
       res.sendStatus(410).json({ message: "something went wrong" })
