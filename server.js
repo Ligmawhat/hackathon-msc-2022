@@ -18,15 +18,16 @@ const myEmitter = require("./src/ee")
 const { SEND_MESSAGE_SOCKET } = require("./src/constants/event")
 const map = new Map()
 
-app.use(express.json())
-app.use(cookieParser())
 app.use(
   cors({
     credentials: true,
     origin: process.env.CLIENT_URL,
   }),
 )
+app.use(express.json())
 app.use(express.static(path.join(__dirname, "build")))
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(cookieParser())
 
 app.use("/event", eventRouter)
 app.use("/user", userRouter)

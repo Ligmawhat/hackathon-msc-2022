@@ -1,5 +1,4 @@
-const { Event } = require("../../db/models")
-
+const { Event, Sequelize } = require("../../db/models")
 
 class EventService {
   async getAllEvents() {
