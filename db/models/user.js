@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasOne(models.Token, { foreignKey: "userId" })
       this.hasOne(models.UserCredential, { foreignKey: "user_id" })
-      this.belongsToMany(models.Events, { through: "Applications", foreignKey: "user_id" })
+      // this.belongsToMany(models.Events, { through: "Applications", foreignKey: "user_id" })
+      this.belongsTo(models.Application, { foreignKey: "user_id" })
       this.hasMany(models.Message, { foreignKey: "user_id" })
     }
   }
