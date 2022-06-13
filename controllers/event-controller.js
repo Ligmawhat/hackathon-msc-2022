@@ -1,4 +1,4 @@
-const { Category, Event } = require("../db/models")
+const { Category, Event, Sequelize } = require("../db/models")
 // const eventService = require("../service/event-service.js")
 
 class EventController {
@@ -19,20 +19,33 @@ class EventController {
     try {
       const { filters } = req.body
       let allEvents;
-      console.log("FILTERS >>>>>>>>>>", filters)
       const newFilters = {}
-      // for(let filter of filters) {
-      //   if(filter.value !== null) {
-      //     if(Array.isArray(filter.value)) {
 
-      //     }
-      //   }
-      // }
-      if(filters.every((filter) => filter.value === null)) {
-        allEvents = await Event.findAll()
+      if(filters.every((filter) => filter.value === null || (Array.isArray(filter.value)
+       && filter.value.every((oneFilter) => !oneFilter.active)))) 
+       {
+        const returnEvents  = await Event.findAll()
+        const allCategories = await Category.findAll({})
+        const allCategoriesIds = allCategories.map((el) => el.id)
+        allEvents = returnEvents.map(({dataValues}) => {
+          return {...dataValues, category: allCategories.find((elem) => elem.id === dataValues.category_id)?.value}
+        })
+      } else {
+        for(let oneFilter of filters) {
+          if(Array.isArray(oneFilter.value)) {
+            console.log(oneFilter)
+            const activeCategories = oneFilter.value.filter((el) => el.active).map((el) => el.title)
+
+            newFilters["where"] = { value: {[Sequelize.Op.or]: [...activeCategories] } }
+              const allCategories = await Category.findAll(newFilters)
+              const allCategoriesIds = allCategories.map((el) => el.id)
+              const returnEvents = await Event.findAll({where: { category_id: {[Sequelize.Op.or]: allCategoriesIds } }})
+              allEvents = returnEvents.map(({dataValues}) => {
+                return {...dataValues, category: allCategories.find((elem) => elem.id === dataValues.category_id)?.value}
+              })
+            }
+        } 
       } 
-      const createdUser = await Event.findOne({ where: { email: email } })
-
       return res.json({allEvents})
     } catch (e) {
       console.log(e)
