@@ -1,4 +1,5 @@
 const { Category, Event } = require("../db/models")
+
 // const eventService = require("../service/event-service.js")
 
 class EventController {
@@ -18,7 +19,7 @@ class EventController {
   async getAllEvents(req, res) {
     try {
       const { filters } = req.body
-      let allEvents;
+      let allEvents
       console.log("FILTERS >>>>>>>>>>", filters)
       const newFilters = {}
       // for(let filter of filters) {
@@ -28,15 +29,14 @@ class EventController {
       //     }
       //   }
       // }
-      if(filters.every((filter) => filter.value === null)) {
+      if (filters.every((filter) => filter.value === null)) {
         allEvents = await Event.findAll()
-      } 
-      const createdUser = await Event.findOne({ where: { email: email } })
+      }
 
-      return res.json({allEvents})
+      return res.json({ allEvents })
     } catch (e) {
       console.log(e)
-      res.sendStatus(410).json({ message: "something went wrong" })
+      res.json({ message: "something went wrong" })
     }
   }
 
@@ -44,7 +44,7 @@ class EventController {
     try {
       const allCategories = await Category.findAll()
       console.log(allCategories)
-      return res.json({allCategories})
+      return res.json({ allCategories })
     } catch (e) {
       console.log(e)
       res.sendStatus(410).json({ message: "something went wrong" })
